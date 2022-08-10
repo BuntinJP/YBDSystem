@@ -1,6 +1,5 @@
 package src;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Class used to execute Discord Webhooks with low effort
@@ -142,7 +143,7 @@ public class DiscordWebhook {
         URL url = new URL(this.url);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_");
+        connection.addRequestProperty("User-Agent", "Java-YBDsystem-BY-Buntin");
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
 
