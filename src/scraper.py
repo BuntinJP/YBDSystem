@@ -1,25 +1,71 @@
 
-import os
+from json import load
+import re,os,pickle,datetime
+from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from time import sleep
 
 
 dir = os.getcwd()
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-###########################################################################################################
 
+###########################################################################################################
+def writeBinary(object,path):
+    with open(path,"wb") as f:
+        pickle.dump(object,f)
+
+def loadBinary():
+    with open("binary","rb") as f:
+        return pickle.load(f)
+
+def preserveToday():
+    if not os.path.exists("archive/"+str(dt.month)):
+        os.makedirs("archive/"+str(dt.month))
+    f = open("archive/"+str(dt.month)+"/"+str(dt.day)+".txt","wb")
+    today = loadBinary()
+
+    for i in today:
+        f.write(i.encode("utf-8"))
+        f.write("\n".encode("utf-8"))
+
+
+extension_path = "C:\\Users\\aokit\\Desktop\\YBDSystem\\src\\profile\\Profile1\\Extensions\\bgnkhhnnamicmpeenaelnjfhikgbkllg\\4.1.1_0"
 options = Options()
 options.add_argument("--user-data-dir=C:\\Users\\aokit\\Desktop\\YBDSystem\\src\\profile")
 options.add_argument("--profile-directory=Profile1")
 options.add_argument("--lang=jp")
-path = "C:\\Users\\aokit\\Desktop\\YBDSystem\\src\\chromedriver.exe"
-driver = webdriver.Chrome(executable_path=path, options=options)
-driver.get("https://google.com")
+options.add_argument(f"load-extension={extension_path}")
+exePath = "C:\\Users\\aokit\\Desktop\\YBDSystem\\src\\chromedriver.exe"
+driver = webdriver.Chrome(executable_path=exePath, options=options)
 
+url = "https://www.twidouga.net/realtime_t.php"
+driver.get(url)
+
+for i in range(5):
+    sleep(1)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+#表示完了
+
+contents = driver.find_elements_by_class_name("item_w180")
+
+
+urls = set(map(lambda x: re.sub("\?tag=..", "", x.find_element_by_tag_name("a").get_attribute("href")), contents))
+
+driver.quit()
+
+dt = datetime.datetime.now()
+
+prev = loadBinary()
+urls = list(urls - set(prev))
+
+if len(urls) == 0:
+    print("No new videos")
+    exit()
+if(dt.hour == 23):
+    preserveToday()
 ###########################################################################################################
 
-
 os.chdir(dir)
+exit()
