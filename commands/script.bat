@@ -1,1 +1,2 @@
-cd
+
+python src/scraper.py

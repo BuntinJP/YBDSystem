@@ -13,8 +13,11 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 ###########################################################################################################
 def writeBinary(object,path):
+    with open("binary","rb") as f:
+        binary = pickle.load(f)
+    
     with open(path,"wb") as f:
-        pickle.dump(object,f)
+        pickle.dump(object+set(binary),f)
 
 def loadBinary():
     with open("binary","rb") as f:
@@ -29,6 +32,7 @@ def preserveToday():
     for i in today:
         f.write(i.encode("utf-8"))
         f.write("\n".encode("utf-8"))
+    os.remove("binary")
 
 
 extension_path = "C:\\Users\\aokit\\Desktop\\YBDSystem\\src\\profile\\Profile1\\Extensions\\bgnkhhnnamicmpeenaelnjfhikgbkllg\\4.1.1_0"
@@ -49,20 +53,23 @@ for i in range(5):
 #表示完了
 
 contents = driver.find_elements_by_class_name("item_w180")
+urls = set()
+for i in contents:
+    urls.add((re.sub("\?tag=\d{1,2}", "", i.find_element_by_tag_name("a").get_attribute("href")),re.sub("\?tag=\d{1,2}", "", i.find_element_by_tag_name("img").get_attribute("src"))))
 
-
-urls = set(map(lambda x: re.sub("\?tag=..", "", x.find_element_by_tag_name("a").get_attribute("href")), contents))
 
 driver.quit()
 
 dt = datetime.datetime.now()
 
-prev = loadBinary()
-urls = list(urls - set(prev))
-
+urls = list(urls - set(loadBinary()))
+#更新なし
 if len(urls) == 0:
     print("No new videos")
     exit()
+#更新あり
+for i in urls:
+    print(i)
 if(dt.hour == 23):
     preserveToday()
 ###########################################################################################################
