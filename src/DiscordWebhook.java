@@ -23,7 +23,7 @@ public class DiscordWebhook {
     private String username;
     private String avatarUrl;
     private boolean tts;
-    private List<EmbedObject> embeds = new ArrayList<>();
+    public List<EmbedObject> embeds = new ArrayList<>();
 
     /**
      * Constructs a new DiscordWebhook instance
@@ -32,6 +32,10 @@ public class DiscordWebhook {
      */
     public DiscordWebhook(String url) {
         this.url = url;
+    }
+
+    public void clearEmbeds() {
+        embeds.clear();
     }
 
     public void setContent(String content) {
